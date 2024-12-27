@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import plantsArray from "./data";
 import { useDispatch } from "react-redux";
 import { addItem } from "./CartSlice";
+
 function ProductList() {
   const dispatch = useDispatch();
   const [showCart, setShowCart] = useState(false);
-  const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+  const [showPlants, setShowPlants] = useState(false);
   const [addedToCart, setAddedToCart] = useState({});
 
   const styleObj = {
@@ -16,45 +17,66 @@ function ProductList() {
     padding: "15px",
     display: "flex",
     justifyContent: "space-between",
-    alignIems: "center",
+    alignItems: "center",
     fontSize: "20px",
   };
+
   const styleObjUl = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "1100px",
   };
+
   const styleA = {
     color: "white",
     fontSize: "30px",
     textDecoration: "none",
   };
 
-  //   Add to cart function
+  // Fonction pour ajouter un produit au panier
   const handleAddToCart = (product) => {
     dispatch(addItem(product));
     setAddedToCart((prevState) => ({
       ...prevState,
-      [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
+      [product.name]: true,
     }));
   };
 
+  // Gestion du clic sur "Cart"
   const handleCartClick = (e) => {
     e.preventDefault();
-    setShowCart(true); // Set showCart to true when cart icon is clicked
-  };
-  const handlePlantsClick = (e) => {
-    e.preventDefault();
-    setShowPlants(true); // Set showAboutUs to true when "About Us" link is clicked
-    setShowCart(false); // Hide the cart when navigating to About Us
+    setShowCart(true);
+    setShowPlants(false);
   };
 
-  const handleContinueShopping = () => {
-    setShowCart(false); // Hide the cart when continuing shopping
+  // Gestion du clic sur "Plants"
+  const handlePlantsClick = (e) => {
+    e.preventDefault();
+    setShowPlants(true);
+    setShowCart(false);
   };
+
+  // Continuer à faire du shopping (revenir à la vue des produits)
+  const handleContinueShopping = () => {
+    setShowCart(false);
+    setShowPlants(false);
+  };
+
+  // Section pour afficher les plantes
+  const PlantsSection = () => (
+    <div>
+      <h1>Plants Section</h1>
+      <p>
+        Explore our wide variety of plants, carefully nurtured for your garden.
+      </p>
+      <button onClick={handleContinueShopping}>Back to Products</button>
+    </div>
+  );
+
   return (
     <div>
+      {/* Barre de navigation */}
       <div className="navbar" style={styleObj}>
         <div className="tag">
           <div className="luxury">
@@ -72,13 +94,11 @@ function ProductList() {
         </div>
         <div style={styleObjUl}>
           <div>
-            {" "}
             <a href="#" onClick={(e) => handlePlantsClick(e)} style={styleA}>
               Plants
             </a>
           </div>
           <div>
-            {" "}
             <a href="#" onClick={(e) => handleCartClick(e)} style={styleA}>
               <h1 className="cart">
                 <svg
@@ -116,7 +136,13 @@ function ProductList() {
           </div>
         </div>
       </div>
-      {!showCart ? (
+
+      {/* Rendu conditionnel */}
+      {showPlants ? (
+        <PlantsSection />
+      ) : showCart ? (
+        <CartItem onContinueShopping={handleContinueShopping} />
+      ) : (
         <div className="product-grid">
           {plantsArray.map((category, index) => (
             <div key={index}>
@@ -132,7 +158,6 @@ function ProductList() {
                       alt={plant.name}
                     />
                     <div className="product-title">{plant.name}</div>
-                    {/*Similarly like the above plant.name show other details like description and cost*/}
                     <div className="product-description">
                       {plant.description}
                     </div>
@@ -158,8 +183,6 @@ function ProductList() {
             </div>
           ))}
         </div>
-      ) : (
-        <CartItem onContinueShopping={handleContinueShopping} />
       )}
     </div>
   );
