@@ -50,9 +50,8 @@ function ProductList() {
     setShowCart(false); // Hide the cart when navigating to About Us
   };
 
-  const handleContinueShopping = (e) => {
-    e.preventDefault();
-    setShowCart(false);
+  const handleContinueShopping = () => {
+    setShowCart(false); // Hide the cart when continuing shopping
   };
   return (
     <div>
@@ -101,6 +100,16 @@ function ProductList() {
                     strokeWidth="2"
                     id="mainIconPathAttribute"
                   ></path>
+                  <text
+                    x="128"
+                    y="128"
+                    textAnchor="middle"
+                    fontWeight="bold"
+                    fill="#faf9f9"
+                    fontSize="60"
+                  >
+                    {Object.keys(addedToCart).length}
+                  </text>
                 </svg>
               </h1>
             </a>
@@ -124,11 +133,24 @@ function ProductList() {
                     />
                     <div className="product-title">{plant.name}</div>
                     {/*Similarly like the above plant.name show other details like description and cost*/}
+                    <div className="product-description">
+                      {plant.description}
+                    </div>
+                    <div className="product-cost">${plant.cost}</div>
                     <button
                       className="product-button"
                       onClick={() => handleAddToCart(plant)}
+                      disabled={addedToCart[plant.name]}
+                      style={{
+                        backgroundColor: addedToCart[plant.name]
+                          ? "#ccc"
+                          : "#4CAF50",
+                        cursor: addedToCart[plant.name]
+                          ? "not-allowed"
+                          : "pointer",
+                      }}
                     >
-                      Add to Cart
+                      {addedToCart[plant.name] ? "Added" : "Add to Cart"}
                     </button>
                   </div>
                 ))}
